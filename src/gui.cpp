@@ -1,5 +1,5 @@
-#include <iostream>
 #include "includes/gui.h"
+#include <iostream>
 
 
 Gui::Gui() {

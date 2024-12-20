@@ -1,7 +1,12 @@
 #pragma once
 
 #include "wifibot.h"
-#include <gtkmm-4.0/gtkmm.h>
+
+#include <gtkmm/box.h>
+#include <gtkmm/grid.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/button.h>
+#include <gtkmm/window.h>
 
 
 class Gui : public Gtk::Window {

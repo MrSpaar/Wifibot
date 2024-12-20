@@ -1,9 +1,5 @@
-#include <cmath>
-#include <thread>
-#include <unistd.h>
-#include <iostream>
-
 #include "includes/wifibot.h"
+#include <iostream>
 
 
 void Wifibot::stop() {

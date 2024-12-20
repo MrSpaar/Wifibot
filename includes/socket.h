@@ -1,5 +1,7 @@
 #pragma once
-#include <giomm.h>
+
+#include <giomm/socket.h>
+#include <giomm/inetsocketaddress.h>
 
 
 class SocketTCP {
