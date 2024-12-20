@@ -13,7 +13,5 @@ executable(
     'src/socket.cpp',
     'src/wifibot.cpp',
   ],
-  dependencies: [
-    dependency('gtkmm-3.0'),
-  ],
+  dependencies: [dependency('gtkmm-4.0')],
 )

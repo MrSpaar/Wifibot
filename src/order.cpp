@@ -2,47 +2,47 @@
 
 
 Order::Order(short left, short right,bool ctr):
-	m_order_R(right),
-	m_order_L(left),
-	m_speed_ctr(ctr)
+	orderR(right),
+	orderL(left),
+	speedCtr(ctr)
 {
-	this->limit();
+	limit();
 }
 
-short Order::get_order_L() const {
-	return m_order_L;
+short Order::getOrderL() const {
+	return orderL;
 }
 
-short Order::get_order_R() const {
-	return m_order_R;
+short Order::getOrderR() const {
+	return orderR;
 }
 
-bool Order::get_speed_ctr() const {
-	return m_speed_ctr;
+bool Order::getSpeedCtr() const {
+	return speedCtr;
 }
 
-void Order::set_order(short left,short right) {
-	m_order_L=left;
-	m_order_R=right;
-	this->limit();
+void Order::setOrder(short left,short right) {
+	orderL = left;
+	orderR = right;
+
+	limit();
 }
 
-void Order::set_speed_ctr(bool ctr) {
-	m_speed_ctr=ctr;
-	this->limit();
+void Order::setSpeedCtr(bool ctr) {
+	speedCtr=ctr;
+	limit();
 }
 
 void Order::limit() {
-	if (m_speed_ctr==true){
-		if(m_order_L > SPEED_MAX_WITH_CTR) m_order_L = SPEED_MAX_WITH_CTR;
-		else if(m_order_L < -SPEED_MAX_WITH_CTR) m_order_L = -SPEED_MAX_WITH_CTR;
-		if(m_order_R > SPEED_MAX_WITH_CTR) m_order_R = SPEED_MAX_WITH_CTR;
-		else if(m_order_R < -SPEED_MAX_WITH_CTR) m_order_R = -SPEED_MAX_WITH_CTR;
+	if (speedCtr) {
+		if(orderL > SPEED_MAX_WITH_CTR) orderL = SPEED_MAX_WITH_CTR;
+		else if(orderL < -SPEED_MAX_WITH_CTR) orderL = -SPEED_MAX_WITH_CTR;
+		if(orderR > SPEED_MAX_WITH_CTR) orderR = SPEED_MAX_WITH_CTR;
+		else if(orderR < -SPEED_MAX_WITH_CTR) orderR = -SPEED_MAX_WITH_CTR;
 	} else {
-		if(m_order_L > SPEED_MAX_WITHOUT_CTR) m_order_L = SPEED_MAX_WITHOUT_CTR;
-		else if(m_order_L < -SPEED_MAX_WITHOUT_CTR) m_order_L = -SPEED_MAX_WITHOUT_CTR;
-		if(m_order_R > SPEED_MAX_WITHOUT_CTR) m_order_R = SPEED_MAX_WITHOUT_CTR;
-		else if(m_order_R < -SPEED_MAX_WITHOUT_CTR) m_order_R = -SPEED_MAX_WITHOUT_CTR;
+		if(orderL > SPEED_MAX_WITHOUT_CTR) orderL = SPEED_MAX_WITHOUT_CTR;
+		else if(orderL < -SPEED_MAX_WITHOUT_CTR) orderL = -SPEED_MAX_WITHOUT_CTR;
+		if(orderR > SPEED_MAX_WITHOUT_CTR) orderR = SPEED_MAX_WITHOUT_CTR;
+		else if(orderR < -SPEED_MAX_WITHOUT_CTR) orderR = -SPEED_MAX_WITHOUT_CTR;
 	}
-
 }

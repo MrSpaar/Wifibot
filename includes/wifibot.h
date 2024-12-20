@@ -1,56 +1,58 @@
 #pragma once
 
-#include <atomic>
-#include <thread>
 #include "order.h"
 #include "socket.h"
+
+#include <atomic>
+#include <thread>
 
 #define LOOP_TIME 200
 #define PORT 15020
 
 
-struct WifibotData {
-    short speed_l;
-	short speed_r;
-	short battery_level;
-	short ir1_l;
-	short ir2_l;
-	short ir1_r;
-	short ir2_r;
+struct RData {
+    struct Wheel {
+        short speed;
+        short ir1;
+        short ir2;
+        long odometry;
+    } left, right;
+
 	short current;
 	short version;
-	long odometry_l;
-	long odometry_r;
+	short battery_level;
 
-	WifibotData(char data[21]);
+	RData(char data[21]);
 };
 
 
 class Wifibot {
 public:
-	Wifibot();
 	~Wifibot();
+
 	void stop();
-	void speed_up();
-	void speed_down();
+	void speedUp();
+	void speedDown();
 	void turn(int direction);
 	void rotate(int direction);
-	void connect(std::string ip);
+	void connect(const std::string &ip);
+
+	RData getData();
 	void disconnect();
-
-	WifibotData get_data();
 private:
-	Order m_order;
-	std::thread* m_p_thread_set;
-	std::thread* m_p_thread_get;
-	std::atomic_bool m_stop;
-	Socket_TCP m_socket;
-	char m_output_buf[9] = {};
-	char m_input_buf[21] = {};
-	unsigned char trame_crc[6];
-private:
-	void start_set_thread();
-	void start_get_thread();
-	short crc16(unsigned char*, unsigned int);
+	Order order;
+	SocketTCP socket;
 
+	std::thread threadSet;
+	std::thread threadGet;
+	std::atomic_bool running{true};
+
+	char outBuf[9] = {};
+	char inBuf[21] = {};
+	unsigned char crcFrame[6];
+private:
+	void startSetThread();
+	void startGetThread();
+
+	short computeCRC16(unsigned char*, unsigned int);
 };
