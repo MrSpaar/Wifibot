@@ -1,5 +1,5 @@
-#include <stdexcept>
 #include "includes/socket.h"
+#include <stdexcept>
 
 
 void SocketTCP::open(const std::string &ip, int port) {
