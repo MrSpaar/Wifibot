@@ -31,10 +31,11 @@ void LabeledIcon::setText(const std::string &text) {
 }
 
 void DataGrid::addLabel(
-    const char *name, const char *iconName, const char *text, int row, int col
+    const char *name, const char *iconName, const char *text,
+    int row, int col, int width, int height
 ) {
     labels[name] = Gtk::make_managed<LabeledIcon>(iconName, name, text);
-    attach(*labels[name], col, row);
+    attach(*labels[name], col, row, width, height);
 }
 
 void DataGrid::updateLabel(const std::string &name, const std::string &value) {
@@ -48,7 +49,7 @@ Gui::Gui() {
 
 	ipEntry.set_hexpand(true);
 	ipEntry.set_margin_end(5);
-	ipEntry.set_text("127.0.0.1");
+	ipEntry.set_text("192.168.1.106");
 
 	connectButton.set_label("Connect");
 	connectButton.signal_clicked().connect([&] {
@@ -91,18 +92,18 @@ Gui::Gui() {
 	controls.set_valign(Gtk::Align::CENTER);
 
 	data.addLabel("Battery", "battery-label-symbolic", "?%", 0, 0);
-	data.addLabel("Version", "version-label-symbolic", "?", 0, 1);
-	data.addLabel("Current", "current-label-symbolic", "?A", 0, 2);
+	data.addLabel("Current", "current-label-symbolic", "?A", 0, 1);
+	data.addLabel("Version", "version-label-symbolic", "?", 0, 2, 2, 1);
 
 	data.addLabel("Left Speed", "speedometer-label-symbolic", "?", 1, 0);
+	data.addLabel("Left Odometry", "odometry-label-symbolic", "?", 1, 1);
 	data.addLabel("Left IR1", "ir-label-symbolic", "?", 2, 0);
-	data.addLabel("Left IR2", "ir-label-symbolic", "?", 3, 0);
-	data.addLabel("Left Odometry", "odometry-label-symbolic", "?", 4, 0);
+	data.addLabel("Left IR2", "ir-label-symbolic", "?", 2, 1);
 
 	data.addLabel("Right Speed", "speedometer-label-symbolic", "?", 1, 2);
+	data.addLabel("Right Odometry", "odometry-label-symbolic", "?", 1, 3);
 	data.addLabel("Right IR1", "ir-label-symbolic", "?", 2, 2);
-	data.addLabel("Right IR2", "ir-label-symbolic", "?", 3, 2);
-	data.addLabel("Right Odometry", "odometry-label-symbolic", "?", 4, 2);
+	data.addLabel("Right IR2", "ir-label-symbolic", "?", 2, 3);
 
 	data.set_row_spacing(5);
 	data.set_column_spacing(5);
