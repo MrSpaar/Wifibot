@@ -34,7 +34,8 @@ private:
 class DataGrid: public Gtk::Grid {
 public:
     void addLabel(
-        const char *name, const char *icon, const char *text, int row, int col
+        const char *name, const char *icon, const char *text,
+        int row, int col, int width = 1, int height = 1
     );
 
     void updateLabel(const std::string &name, const std::string &value);
