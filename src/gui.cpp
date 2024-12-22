@@ -1,4 +1,7 @@
 #include "includes/gui.h"
+#include "includes/wifibot.h"
+#include <glibmm.h>
+#include <string>
 
 
 void ControlGrid::addButton(
@@ -59,62 +62,84 @@ Gui::Gui() {
 	connectBox.append(ipEntry);
 	connectBox.append(connectButton);
 
-	controls.addButton("up-button-symbolic", 0, 1, [&] {
+	controlGrid.addButton("up-button-symbolic", 0, 1, [&] {
 	   robot.speedUp();
 	});
 
-	controls.addButton("down-button-symbolic", 2, 1, [&] {
+	controlGrid.addButton("down-button-symbolic", 2, 1, [&] {
 	   robot.speedDown();
 	});
 
-	controls.addButton("left-button-symbolic", 1, 0, [&] {
+	controlGrid.addButton("left-button-symbolic", 1, 0, [&] {
 	   robot.turn(-1);
 	});
 
-	controls.addButton("right-button-symbolic", 1, 2, [&] {
+	controlGrid.addButton("right-button-symbolic", 1, 2, [&] {
 	   robot.turn(+1);
 	});
 
-    controls.addButton("rotate-left-button-symbolic", 2, 0, [&] {
+    controlGrid.addButton("rotate-left-button-symbolic", 2, 0, [&] {
         robot.rotate(-1);
     });
 
-    controls.addButton("rotate-right-button-symbolic", 2, 2, [&] {
+    controlGrid.addButton("rotate-right-button-symbolic", 2, 2, [&] {
         robot.rotate(+1);
     });
 
-    controls.addButton("stop-button-symbolic", 1, 1, [&] {
+    controlGrid.addButton("stop-button-symbolic", 1, 1, [&] {
         robot.stop();
     });
 
-	controls.set_margin_end(5);
-	controls.set_halign(Gtk::Align::CENTER);
-	controls.set_valign(Gtk::Align::CENTER);
+	controlGrid.set_margin_end(5);
+	controlGrid.set_halign(Gtk::Align::CENTER);
+	controlGrid.set_valign(Gtk::Align::CENTER);
 
-	data.addLabel("Battery", "battery-label-symbolic", "?%", 0, 0);
-	data.addLabel("Current", "current-label-symbolic", "?A", 0, 1);
-	data.addLabel("Version", "version-label-symbolic", "?", 0, 2, 2, 1);
+	dataGrid.addLabel("Battery", "battery-label-symbolic", "?%", 0, 0);
+	dataGrid.addLabel("Current", "current-label-symbolic", "?A", 0, 1);
+	dataGrid.addLabel("Version", "version-label-symbolic", "?", 0, 2, 2, 1);
 
-	data.addLabel("Left Speed", "speedometer-label-symbolic", "?", 1, 0);
-	data.addLabel("Left Odometry", "odometry-label-symbolic", "?", 1, 1);
-	data.addLabel("Left IR1", "ir-label-symbolic", "?", 2, 0);
-	data.addLabel("Left IR2", "ir-label-symbolic", "?", 2, 1);
+	dataGrid.addLabel("Left Speed", "speedometer-label-symbolic", "?", 1, 0);
+	dataGrid.addLabel("Left Odometry", "odometry-label-symbolic", "?", 1, 1);
+	dataGrid.addLabel("Left IR1", "ir-label-symbolic", "?", 2, 0);
+	dataGrid.addLabel("Left IR2", "ir-label-symbolic", "?", 2, 1);
 
-	data.addLabel("Right Speed", "speedometer-label-symbolic", "?", 1, 2);
-	data.addLabel("Right Odometry", "odometry-label-symbolic", "?", 1, 3);
-	data.addLabel("Right IR1", "ir-label-symbolic", "?", 2, 2);
-	data.addLabel("Right IR2", "ir-label-symbolic", "?", 2, 3);
+	dataGrid.addLabel("Right Speed", "speedometer-label-symbolic", "?", 1, 2);
+	dataGrid.addLabel("Right Odometry", "odometry-label-symbolic", "?", 1, 3);
+	dataGrid.addLabel("Right IR1", "ir-label-symbolic", "?", 2, 2);
+	dataGrid.addLabel("Right IR2", "ir-label-symbolic", "?", 2, 3);
 
-	data.set_row_spacing(5);
-	data.set_column_spacing(5);
-	data.set_halign(Gtk::Align::CENTER);
+	dataGrid.set_row_spacing(5);
+	dataGrid.set_column_spacing(5);
+	dataGrid.set_halign(Gtk::Align::CENTER);
 
 	container.attach(connectBox, 0, 0, 2, 1);
-	container.attach(controls, 0, 1);
-	container.attach(data, 1, 1);
+	container.attach(controlGrid, 0, 1);
+	container.attach(dataGrid, 1, 1);
 	container.set_margin(10);
 	container.set_row_spacing(10);
 	container.set_column_spacing(10);
+
+	Glib ::signal_timeout().connect(sigc::mem_fun(*this, &Gui::timeOut), 400);
+}
+
+bool Gui::timeOut() {
+    RData data = robot.getData();
+
+    dataGrid.updateLabel("Battery", std::to_string(data.battery_level) + "%");
+    dataGrid.updateLabel("Current", std::to_string(data.current) + "A");
+    dataGrid.updateLabel("Version", std::to_string(data.version));
+
+    dataGrid.updateLabel("Left Speed", std::to_string(data.left.speed));
+    dataGrid.updateLabel("Left Odometry", std::to_string(data.left.odometry));
+    dataGrid.updateLabel("Left IR1", std::to_string(data.left.ir1));
+    dataGrid.updateLabel("Left IR2", std::to_string(data.left.ir2));
+
+    dataGrid.updateLabel("Right Speed", std::to_string(data.right.speed));
+    dataGrid.updateLabel("Right Odometry", std::to_string(data.right.odometry));
+    dataGrid.updateLabel("Right IR1", std::to_string(data.right.ir1));
+    dataGrid.updateLabel("Right IR2", std::to_string(data.right.ir2));
+
+    return true;
 }
 
 Gui::~Gui() {

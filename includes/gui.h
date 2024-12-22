@@ -49,11 +49,13 @@ public:
 	Gui();
 	~Gui();
 private:
+    bool timeOut();
+private:
 	Wifibot robot;
 
 	Gtk::Grid container;
-	ControlGrid controls;
-	DataGrid data;
+	ControlGrid controlGrid;
+	DataGrid dataGrid;
 
 	Gtk::Box connectBox;
 	Gtk::Entry ipEntry;
