@@ -1,7 +1,5 @@
 #include "includes/gui.h"
-#include "includes/wifibot.h"
 #include <glibmm.h>
-#include <string>
 
 
 void ControlGrid::addButton(
@@ -48,35 +46,41 @@ void DataGrid::updateLabel(const std::string &name, const std::string &value) {
 Gui::Gui() {
     set_child(container);
     set_title("Wifibot");
-	set_resizable(false);
+    set_resizable(false);
 
-	ipEntry.set_hexpand(true);
-	ipEntry.set_margin_end(5);
-	ipEntry.set_text("192.168.1.106");
+    ipEntry.set_hexpand(true);
+    ipEntry.set_margin_end(5);
+    ipEntry.set_text("127.0.0.1");
 
-	connectButton.set_label("Connect");
-	connectButton.signal_clicked().connect([&] {
-		robot.connect(ipEntry.get_text());
-	});
+    connectButton.set_label("Connect");
+    connectButton.signal_clicked().connect([&] {
+        if (!robot.connect(ipEntry.get_text())) {
+            ipEntry.set_text("");
+            return;
+        }
 
-	connectBox.append(ipEntry);
-	connectBox.append(connectButton);
+        ipEntry.set_sensitive(false);
+        connectButton.set_sensitive(false);
+    });
 
-	controlGrid.addButton("up-button-symbolic", 0, 1, [&] {
-	   robot.speedUp();
-	});
+    connectBox.append(ipEntry);
+    connectBox.append(connectButton);
 
-	controlGrid.addButton("down-button-symbolic", 2, 1, [&] {
-	   robot.speedDown();
-	});
+    controlGrid.addButton("up-button-symbolic", 0, 1, [&] {
+       robot.speedUp();
+    });
 
-	controlGrid.addButton("left-button-symbolic", 1, 0, [&] {
-	   robot.turn(-1);
-	});
+    controlGrid.addButton("down-button-symbolic", 2, 1, [&] {
+       robot.speedDown();
+    });
 
-	controlGrid.addButton("right-button-symbolic", 1, 2, [&] {
-	   robot.turn(+1);
-	});
+    controlGrid.addButton("left-button-symbolic", 1, 0, [&] {
+       robot.turn(-1);
+    });
+
+    controlGrid.addButton("right-button-symbolic", 1, 2, [&] {
+       robot.turn(+1);
+    });
 
     controlGrid.addButton("rotate-left-button-symbolic", 2, 0, [&] {
         robot.rotate(-1);
@@ -90,36 +94,36 @@ Gui::Gui() {
         robot.stop();
     });
 
-	controlGrid.set_margin_end(5);
-	controlGrid.set_halign(Gtk::Align::CENTER);
-	controlGrid.set_valign(Gtk::Align::CENTER);
+    controlGrid.set_margin_end(5);
+    controlGrid.set_halign(Gtk::Align::CENTER);
+    controlGrid.set_valign(Gtk::Align::CENTER);
 
-	dataGrid.addLabel("Battery", "battery-label-symbolic", "?%", 0, 0);
-	dataGrid.addLabel("Current", "current-label-symbolic", "?A", 0, 1);
-	dataGrid.addLabel("Version", "version-label-symbolic", "?", 0, 2, 2, 1);
+    dataGrid.addLabel("Battery", "battery-label-symbolic", "?%", 0, 0);
+    dataGrid.addLabel("Current", "current-label-symbolic", "?A", 0, 1);
+    dataGrid.addLabel("Version", "version-label-symbolic", "?", 0, 2, 2, 1);
 
-	dataGrid.addLabel("Left Speed", "speedometer-label-symbolic", "?", 1, 0);
-	dataGrid.addLabel("Left Odometry", "odometry-label-symbolic", "?", 1, 1);
-	dataGrid.addLabel("Left IR1", "ir-label-symbolic", "?", 2, 0);
-	dataGrid.addLabel("Left IR2", "ir-label-symbolic", "?", 2, 1);
+    dataGrid.addLabel("Left Speed", "speedometer-label-symbolic", "?", 1, 0);
+    dataGrid.addLabel("Left Odometry", "odometry-label-symbolic", "?", 1, 1);
+    dataGrid.addLabel("Left IR1", "ir-label-symbolic", "?", 2, 0);
+    dataGrid.addLabel("Left IR2", "ir-label-symbolic", "?", 2, 1);
 
-	dataGrid.addLabel("Right Speed", "speedometer-label-symbolic", "?", 1, 2);
-	dataGrid.addLabel("Right Odometry", "odometry-label-symbolic", "?", 1, 3);
-	dataGrid.addLabel("Right IR1", "ir-label-symbolic", "?", 2, 2);
-	dataGrid.addLabel("Right IR2", "ir-label-symbolic", "?", 2, 3);
+    dataGrid.addLabel("Right Speed", "speedometer-label-symbolic", "?", 1, 2);
+    dataGrid.addLabel("Right Odometry", "odometry-label-symbolic", "?", 1, 3);
+    dataGrid.addLabel("Right IR1", "ir-label-symbolic", "?", 2, 2);
+    dataGrid.addLabel("Right IR2", "ir-label-symbolic", "?", 2, 3);
 
-	dataGrid.set_row_spacing(5);
-	dataGrid.set_column_spacing(5);
-	dataGrid.set_halign(Gtk::Align::CENTER);
+    dataGrid.set_row_spacing(5);
+    dataGrid.set_column_spacing(5);
+    dataGrid.set_halign(Gtk::Align::CENTER);
 
-	container.attach(connectBox, 0, 0, 2, 1);
-	container.attach(controlGrid, 0, 1);
-	container.attach(dataGrid, 1, 1);
-	container.set_margin(10);
-	container.set_row_spacing(10);
-	container.set_column_spacing(10);
+    container.attach(connectBox, 0, 0, 2, 1);
+    container.attach(controlGrid, 0, 1);
+    container.attach(dataGrid, 1, 1);
+    container.set_margin(10);
+    container.set_row_spacing(10);
+    container.set_column_spacing(10);
 
-	Glib ::signal_timeout().connect(sigc::mem_fun(*this, &Gui::timeOut), 400);
+    Glib::signal_timeout().connect(sigc::mem_fun(*this, &Gui::timeOut), 400);
 }
 
 bool Gui::timeOut() {
@@ -143,5 +147,5 @@ bool Gui::timeOut() {
 }
 
 Gui::~Gui() {
-	robot.disconnect();
+    robot.disconnect();
 }
