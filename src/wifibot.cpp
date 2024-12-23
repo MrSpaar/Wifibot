@@ -3,119 +3,119 @@
 
 
 void Wifibot::stop() {
-	order.setOrder(0,0);
-	std::cout << "Stop()" << std::endl;
+    order.setOrder(0,0);
+    std::cout << "Stop()" << std::endl;
 }
 
 void Wifibot::speedUp() {
-	if (order.getOrderL() == order.getOrderR()) {
-		order.setOrder(order.getOrderL()+10, order.getOrderR()+10);
-	} else {
-		int moy = order.getOrderR() + order.getOrderL()/2;
-		order.setOrder(moy+10, moy+10);
-	}
+    if (order.getOrderL() == order.getOrderR()) {
+        order.setOrder(order.getOrderL()+10, order.getOrderR()+10);
+    } else {
+        int moy = order.getOrderR() + order.getOrderL()/2;
+        order.setOrder(moy+10, moy+10);
+    }
 
-	std::cout << "UP" << std::endl;
-	std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
+    std::cout << "UP" << std::endl;
+    std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
 }
 
 void Wifibot::speedDown() {
-	if (order.getOrderL() == order.getOrderR()) {
-		order.setOrder(order.getOrderL()-10, order.getOrderR()-10);
-	} else {
-		int moy = order.getOrderR() + order.getOrderL()/2;
-		order.setOrder(moy-10, moy-10);
-	}
+    if (order.getOrderL() == order.getOrderR()) {
+        order.setOrder(order.getOrderL()-10, order.getOrderR()-10);
+    } else {
+        int moy = order.getOrderR() + order.getOrderL()/2;
+        order.setOrder(moy-10, moy-10);
+    }
 
-	std::cout << "DOWN" << std::endl;
-	std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
+    std::cout << "DOWN" << std::endl;
+    std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
 
 }
 
 void Wifibot::turn(int direction) {
-	std::cout << "TURN" << std::endl;
-	if (direction == +1) {
-		order.setOrder(order.getOrderL()*1.2, order.getOrderR()*0.8);
-		std::cout << "Tourne à Droite" << std::endl;
-		std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
-	} else {
-		order.setOrder(order.getOrderL()*0.8, order.getOrderR()*1.2);
-		std::cout << "Tourne à Gauche" << std::endl;
-		std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
-	}
+    std::cout << "TURN" << std::endl;
+    if (direction == +1) {
+        order.setOrder(order.getOrderL()*1.2, order.getOrderR()*0.8);
+        std::cout << "Tourne à Droite" << std::endl;
+        std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
+    } else {
+        order.setOrder(order.getOrderL()*0.8, order.getOrderR()*1.2);
+        std::cout << "Tourne à Gauche" << std::endl;
+        std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
+    }
 }
 
 void Wifibot::rotate(int direction) {
-	std::cout << "ROTATE" << std::endl;
-	this->stop();
-	usleep(1000000);
+    std::cout << "ROTATE" << std::endl;
+    this->stop();
+    usleep(1000000);
 
-	if (direction==+1) {
-		order.setOrder(10, -10);
-		std::cout << "Rotation à Droite" << std::endl;
-		std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
-	} else {
-		order.setOrder(-10, 10);
-		std::cout << "Rotation à Gauche" << std::endl;
-		std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
-	}
+    if (direction==+1) {
+        order.setOrder(10, -10);
+        std::cout << "Rotation à Droite" << std::endl;
+        std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
+    } else {
+        order.setOrder(-10, 10);
+        std::cout << "Rotation à Gauche" << std::endl;
+        std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
+    }
 }
 
 short Wifibot::computeCRC16(unsigned char* frame, unsigned int length) {
     unsigned int parity = 0;
-	unsigned int crc = 0xFFFF;
-	unsigned int polynome = 0xA001;
+    unsigned int crc = 0xFFFF;
+    unsigned int polynome = 0xA001;
 
-	for (unsigned int idxByte = 0 ; idxByte < length; idxByte++) {
-		crc ^= *(frame + idxByte);
+    for (unsigned int idxByte = 0 ; idxByte < length; idxByte++) {
+        crc ^= *(frame + idxByte);
 
-		for (unsigned int idxBit = 0; idxBit <= 7 ; idxBit++) {
-			parity = crc;
-			crc >>= 1;
-			if (parity%2 == true) crc ^= polynome;
-		}
-	}
+        for (unsigned int idxBit = 0; idxBit <= 7 ; idxBit++) {
+            parity = crc;
+            crc >>= 1;
+            if (parity%2 == true) crc ^= polynome;
+        }
+    }
 
-	return(crc);
+    return(crc);
 }
 
 void Wifibot::startSetThread() {
     short crc;
-	static int cpt;
+    static int cpt;
 
-	while (running) {
-		std::cout << "Thread [send]: " << ++cpt << std::endl;
+    while (running) {
+        std::cout << "Thread [send]: " << ++cpt << std::endl;
 
-		bool speedCtr = order.getSpeedCtr();
-		bool rightDirection = order.getOrderR() >=0;
-		short rightSpeed = abs(order.getOrderR());
-		bool leftDirection = order.getOrderL() >=0;
-		short leftSpeed = abs(order.getOrderL());
+        bool speedCtr = order.getSpeedCtr();
+        bool rightDirection = order.getOrderR() >=0;
+        short rightSpeed = abs(order.getOrderR());
+        bool leftDirection = order.getOrderL() >=0;
+        short leftSpeed = abs(order.getOrderL());
 
-		outBuf[0] = 0xFF;
-		outBuf[1] = 0x07;
-		outBuf[2] = leftSpeed & 0xFF;
-		outBuf[3] = (leftSpeed >> 8) & 0xFF;
-		outBuf[4] = rightSpeed & 0xFF;
-		outBuf[5] = (rightSpeed >> 8) & 0xFF;
-		outBuf[6] = (char) (128*speedCtr + 64*leftDirection + 32*speedCtr + 16*rightDirection + 8);
+        outBuf[0] = 0xFF;
+        outBuf[1] = 0x07;
+        outBuf[2] = leftSpeed & 0xFF;
+        outBuf[3] = (leftSpeed >> 8) & 0xFF;
+        outBuf[4] = rightSpeed & 0xFF;
+        outBuf[5] = (rightSpeed >> 8) & 0xFF;
+        outBuf[6] = (char) (128*speedCtr + 64*leftDirection + 32*speedCtr + 16*rightDirection + 8);
 
-		crcFrame[0] = (unsigned char) outBuf[1];
-		crcFrame[1] = (unsigned char) outBuf[2];
-		crcFrame[2] = (unsigned char) outBuf[3];
-		crcFrame[3] = (unsigned char) outBuf[4];
-		crcFrame[4] = (unsigned char) outBuf[5];
-		crcFrame[5] = (unsigned char) outBuf[6];
+        crcFrame[0] = (unsigned char) outBuf[1];
+        crcFrame[1] = (unsigned char) outBuf[2];
+        crcFrame[2] = (unsigned char) outBuf[3];
+        crcFrame[3] = (unsigned char) outBuf[4];
+        crcFrame[4] = (unsigned char) outBuf[5];
+        crcFrame[5] = (unsigned char) outBuf[6];
 
-		crc = computeCRC16(crcFrame,6);
-		outBuf[7] = crc & 0xFF;
-		outBuf[8] = (crc >> 8) & 0xFF;
+        crc = computeCRC16(crcFrame,6);
+        outBuf[7] = crc & 0xFF;
+        outBuf[8] = (crc >> 8) & 0xFF;
 
-		socket.send(outBuf, 9);
-		std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_TIME));
-	}
+        socket.send(outBuf, 9);
+        std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_TIME));
+    }
 
-	std::cout << "Thread [send]: stop !" << std::endl << std::endl;
+    std::cout << "Thread [send]: stop !" << std::endl << std::endl;
 }
 
 void Wifibot::startGetThread() {
@@ -152,14 +152,13 @@ RData::RData(char data[21]) {
     battery_level = data[2];
 }
 
-void Wifibot::connect(const std::string &ip) {
-	socket.open(ip, PORT);
-	std::cout << "Wifibot connect()" << std::endl;
+bool Wifibot::connect(const std::string &ip) {
+    std::cout << "Wifibot connect()" << std::endl;
+    if (!socket.open(ip, PORT)) return false;
 
-	if (socket.isOpened()) {
-	    // threadSet = std::thread(&Wifibot::startSetThread, this);
-		threadGet = std::thread(&Wifibot::startGetThread, this);
-	}
+    // threadSet = std::thread(&Wifibot::startSetThread, this);
+    threadGet = std::thread(&Wifibot::startGetThread, this);
+    return true;
 }
 
 RData Wifibot::getData() {
@@ -168,15 +167,14 @@ RData Wifibot::getData() {
 
 void Wifibot::disconnect() {
     running = false;
+    socket.close();
 
-	if (threadGet.joinable())
-	   threadGet.join();
-	if (threadSet.joinable())
-	   threadSet.join();
-
-	socket.close();
+    if (threadGet.joinable())
+       threadGet.join();
+    if (threadSet.joinable())
+       threadSet.join();
 }
 
 Wifibot::~Wifibot() {
-	disconnect();
+    disconnect();
 }

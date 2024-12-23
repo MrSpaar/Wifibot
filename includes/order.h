@@ -6,16 +6,16 @@
 
 class Order {
 public:
-	Order(short left = 0, short rigth = 0, bool ctr = true);
-	short getOrderR() const;
-	short getOrderL() const;
-	bool getSpeedCtr() const;
-	void setSpeedCtr(bool ctr);
-	void setOrder(short left, short right);
+    Order(short left = 0, short rigth = 0, bool ctr = true);
+    short getOrderR() const;
+    short getOrderL() const;
+    bool getSpeedCtr() const;
+    void setSpeedCtr(bool ctr);
+    void setOrder(short left, short right);
 private:
-	short orderR;
-	short orderL;
-	bool speedCtr;
+    short orderR;
+    short orderL;
+    bool speedCtr;
 
-	void limit();
+    void limit();
 };

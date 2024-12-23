@@ -46,18 +46,18 @@ private:
 
 class Gui: public Gtk::Window {
 public:
-	Gui();
-	~Gui();
+    Gui();
+    ~Gui();
 private:
     bool timeOut();
 private:
-	Wifibot robot;
+    Wifibot robot;
 
-	Gtk::Grid container;
-	ControlGrid controlGrid;
-	DataGrid dataGrid;
+    Gtk::Grid container;
+    ControlGrid controlGrid;
+    DataGrid dataGrid;
 
-	Gtk::Box connectBox;
-	Gtk::Entry ipEntry;
-	Gtk::Button connectButton;
+    Gtk::Box connectBox;
+    Gtk::Entry ipEntry;
+    Gtk::Button connectButton;
 };

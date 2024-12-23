@@ -6,16 +6,15 @@
 
 class SocketTCP {
 public:
-	~SocketTCP();
+    ~SocketTCP();
 
-	void open(const std::string &ip, int port);
-	bool isOpened();
-	void close();
-	void send(const char* p_data, int size) const;
-	void send(std::string str_data) const;
-	void receive(char* p_data, int size);
+    bool open(const std::string &ip, int port);
+    void close();
+
+    void send(const char* p_data, int size) const;
+    void receive(char* p_data, int size);
 private:
-	Glib::RefPtr<Gio::Socket> socket;
-	Glib::RefPtr<Gio::InetSocketAddress> address;
-	Glib::RefPtr<Gio::Cancellable> cancellable;
+    Glib::RefPtr<Gio::Socket> socket;
+    Glib::RefPtr<Gio::InetSocketAddress> address;
+    Glib::RefPtr<Gio::Cancellable> cancellable;
 };

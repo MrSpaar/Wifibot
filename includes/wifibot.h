@@ -18,41 +18,41 @@ struct RData {
         long odometry;
     } left, right;
 
-	short current;
-	short version;
-	short battery_level;
+    short current;
+    short version;
+    short battery_level;
 
-	RData(char data[21]);
+    RData(char data[21]);
 };
 
 
 class Wifibot {
 public:
-	~Wifibot();
+    ~Wifibot();
 
-	void stop();
-	void speedUp();
-	void speedDown();
-	void turn(int direction);
-	void rotate(int direction);
-	void connect(const std::string &ip);
+    void stop();
+    void speedUp();
+    void speedDown();
+    void turn(int direction);
+    void rotate(int direction);
+    bool connect(const std::string &ip);
 
-	RData getData();
-	void disconnect();
+    RData getData();
+    void disconnect();
 private:
-	Order order;
-	SocketTCP socket;
+    Order order;
+    SocketTCP socket;
 
-	std::thread threadSet;
-	std::thread threadGet;
-	std::atomic_bool running{true};
+    std::thread threadSet;
+    std::thread threadGet;
+    std::atomic_bool running{true};
 
-	char outBuf[9] = {};
-	char inBuf[21] = {};
-	unsigned char crcFrame[6];
+    char outBuf[9] = {};
+    char inBuf[21] = {};
+    unsigned char crcFrame[6];
 private:
-	void startSetThread();
-	void startGetThread();
+    void startSetThread();
+    void startGetThread();
 
-	short computeCRC16(unsigned char*, unsigned int);
+    short computeCRC16(unsigned char*, unsigned int);
 };
