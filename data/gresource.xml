@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<gresources prefix="/org/wifibot">
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+<gresources prefix="/com/github/mrspaar/Wifibot">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="speedometer-label-symbolic.svg"
         >icons/speedometer-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="version-label-symbolic.svg"
         >icons/branch-arrow-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="battery-label-symbolic.svg"
         >icons/battery-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="current-label-symbolic.svg"
         >icons/camera-flash-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="ir-label-symbolic.svg"
         >icons/ruler-angled-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="odometry-label-symbolic.svg"
         >icons/plus-circle-outline-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="down-button-symbolic.svg"
         >icons/arrow1-down-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="up-button-symbolic.svg"
         >icons/arrow1-up-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="right-button-symbolic.svg"
         >icons/arrow1-right-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="left-button-symbolic.svg"
         >icons/arrow1-left-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="rotate-left-button-symbolic.svg"
         >icons/arrow-circular-bottom-right-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="rotate-right-button-symbolic.svg"
         >icons/arrow-circular-bottom-left-symbolic.svg</file>
   </gresource>
-  <gresource prefix="/org/wifibot/icons/scalable/actions/">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
     <file
             preprocess="xml-stripblanks"
             alias="stop-button-symbolic.svg"
