@@ -17,9 +17,10 @@
 class ControlGrid: public Gtk::Grid {
 public:
     void addButton(
-        const char *iconName, int row, int col, std::function<void()> callback
+        const char *tooltip, const char *iconName, int row, int col, std::function<void()> callback
     ) {
         auto button = Gtk::make_managed<Gtk::Button>();
+        button->set_tooltip_text(tooltip);
 
         button->set_sensitive(false);
         button->signal_clicked().connect(callback);
@@ -91,31 +92,31 @@ public:
         connectBox.append(ipEntry);
         connectBox.append(connectButton);
 
-        controlGrid.addButton("up-button-symbolic", 0, 1, [this] {
+        controlGrid.addButton("Forward", "up-button-symbolic", 0, 1, [this] {
            robot.speedUp();
         });
 
-        controlGrid.addButton("down-button-symbolic", 2, 1, [this] {
+        controlGrid.addButton("Back", "down-button-symbolic", 2, 1, [this] {
            robot.speedDown();
         });
 
-        controlGrid.addButton("left-button-symbolic", 1, 0, [this] {
+        controlGrid.addButton("Left", "left-button-symbolic", 1, 0, [this] {
            robot.turn(-1);
         });
 
-        controlGrid.addButton("right-button-symbolic", 1, 2, [this] {
+        controlGrid.addButton("Right", "right-button-symbolic", 1, 2, [this] {
            robot.turn(+1);
         });
 
-        controlGrid.addButton("rotate-left-button-symbolic", 2, 0, [this] {
+        controlGrid.addButton("Anti-Clockwise rotation", "rotate-left-button-symbolic", 2, 0, [this] {
             robot.rotate(-1);
         });
 
-        controlGrid.addButton("rotate-right-button-symbolic", 2, 2, [this] {
+        controlGrid.addButton("Clockwise rotation", "rotate-right-button-symbolic", 2, 2, [this] {
             robot.rotate(+1);
         });
 
-        controlGrid.addButton("stop-button-symbolic", 1, 1, [this] {
+        controlGrid.addButton("Stop", "stop-button-symbolic", 1, 1, [this] {
             robot.stop();
         });
 
