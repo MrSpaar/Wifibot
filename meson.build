@@ -10,12 +10,6 @@ gresource = gnome.compile_resources('gresource', 'data/gresource.xml', source_di
 executable(
   'bin',
   gresource,
-  [
-    'main.cpp',
-    'src/gui.cpp',
-    'src/order.cpp',
-    'src/socket.cpp',
-    'src/wifibot.cpp',
-  ],
+  'src/main.cpp',
   dependencies: [dependency('gtkmm-4.0')],
 )
