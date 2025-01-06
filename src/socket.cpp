@@ -39,10 +39,8 @@ void SocketTCP::receive(char* p_data, int size) {
 }
 
 void SocketTCP::close() {
-    if (socket->is_connected()) {
-        cancellable->cancel();
-        socket->close();
-    }
+    cancellable->cancel();
+    socket->close();
 }
 
 SocketTCP::~SocketTCP() {

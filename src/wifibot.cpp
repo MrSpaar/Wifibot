@@ -81,11 +81,9 @@ short Wifibot::computeCRC16(unsigned char* frame, unsigned int length) {
 
 void Wifibot::startSetThread() {
     short crc;
-    static int cpt;
+    std::cout << "Thread [send]: start!" << std::endl;
 
     while (running) {
-        std::cout << "Thread [send]: " << ++cpt << std::endl;
-
         bool speedCtr = order.getSpeedCtr();
         bool rightDirection = order.getOrderR() >=0;
         short rightSpeed = abs(order.getOrderR());
@@ -115,11 +113,12 @@ void Wifibot::startSetThread() {
         std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_TIME));
     }
 
-    std::cout << "Thread [send]: stop !" << std::endl << std::endl;
+    std::cout << "Thread [send]: stop!" << std::endl << std::endl;
 }
 
 void Wifibot::startGetThread() {
     short crc;
+    std::cout << "Thread [receive]: start!" << std::endl;
 
     while (running) {
         socket.receive(inBuf, 21);
@@ -130,6 +129,8 @@ void Wifibot::startGetThread() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_TIME));
     }
+
+    std::cout << "Thread [receive]: stop!" << std::endl;
 }
 
 RData::RData(char data[21]) {
@@ -156,7 +157,7 @@ bool Wifibot::connect(const std::string &ip) {
     std::cout << "Wifibot connect()" << std::endl;
     if (!socket.open(ip, PORT)) return false;
 
-    // threadSet = std::thread(&Wifibot::startSetThread, this);
+    threadSet = std::thread(&Wifibot::startSetThread, this);
     threadGet = std::thread(&Wifibot::startGetThread, this);
     return true;
 }

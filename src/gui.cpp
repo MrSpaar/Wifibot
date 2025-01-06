@@ -7,6 +7,7 @@ void ControlGrid::addButton(
 ) {
     auto button = Gtk::make_managed<Gtk::Button>();
 
+    button->set_sensitive(false);
     button->signal_clicked().connect(callback);
     button->set_image_from_icon_name(iconName);
 
@@ -61,6 +62,14 @@ Gui::Gui() {
 
         ipEntry.set_sensitive(false);
         connectButton.set_sensitive(false);
+
+        for (auto *child: controlGrid.get_children()) {
+            child->set_sensitive(true);
+        }
+
+        for (auto *child: dataGrid.get_children()) {
+            child->set_sensitive(true);
+        }
     });
 
     connectBox.append(ipEntry);
