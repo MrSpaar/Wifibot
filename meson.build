@@ -5,7 +5,7 @@ project(
 )
 
 gnome = import('gnome')
-gresource = gnome.compile_resources('gresource', 'data' / 'resources.gresource.xml', source_dir: 'data')
+gresource = gnome.compile_resources('gresource', 'data/gresource.xml', source_dir: 'data')
 
 executable(
   'bin',
