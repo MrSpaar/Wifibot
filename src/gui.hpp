@@ -1,6 +1,7 @@
 #pragma once
 
 #include "wifibot.hpp"
+#include <string>
 #include <unordered_map>
 
 #include <glibmm.h>
@@ -12,23 +13,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/window.h>
 #include <gtkmm/application.h>
-
-
-class ControlGrid: public Gtk::Grid {
-public:
-    void addButton(
-        const char *tooltip, const char *iconName, int row, int col, std::function<void()> callback
-    ) {
-        auto button = Gtk::make_managed<Gtk::Button>();
-        button->set_tooltip_text(tooltip);
-
-        button->set_sensitive(false);
-        button->signal_clicked().connect(callback);
-        button->set_image_from_icon_name(iconName);
-
-        attach(*button, col, row);
-    }
-};
 
 
 class LabeledIcon: public Gtk::Button {
@@ -54,6 +38,35 @@ private:
     Gtk::Box container;
     Gtk::Image image;
     Gtk::Label label;
+};
+
+
+class ControlGrid: public Gtk::Grid {
+public:
+    ControlGrid() {
+        confirmButton.set_label("Go");
+        confirmButton.set_margin_top(5);
+        distanceEntry.set_margin_top(5);
+
+        attach(confirmButton, 2, 3);
+        attach(distanceEntry, 0, 3, 2, 1);
+    }
+
+    void addButton(
+        const char *tooltip, const char *iconName, int row, int col, std::function<void()> callback
+    ) {
+        auto button = Gtk::make_managed<Gtk::Button>();
+        button->set_tooltip_text(tooltip);
+
+        button->set_sensitive(false);
+        button->signal_clicked().connect(callback);
+        button->set_image_from_icon_name(iconName);
+
+        attach(*button, col, row);
+    }
+private:
+    Gtk::Entry distanceEntry;
+    Gtk::Button confirmButton;
 };
 
 
@@ -130,11 +143,13 @@ public:
 
         dataGrid.addLabel("Left Speed", "speedometer-label-symbolic", "? tics", 1, 0);
         dataGrid.addLabel("Left IR", "ir-label-symbolic", "?cm", 1, 1);
-        dataGrid.addLabel("Left Odometry", "odometry-label-symbolic", "?", 2, 0, 2, 1);
 
         dataGrid.addLabel("Right Speed", "speedometer-label-symbolic", "? tics", 1, 2);
         dataGrid.addLabel("Right IR", "ir-label-symbolic", "?cm", 1, 3);
-        dataGrid.addLabel("Right Odometry", "odometry-label-symbolic", "?", 2, 2, 2, 1);
+
+        dataGrid.addLabel("X", "odometry-label-symbolic", "X", 2, 0);
+        dataGrid.addLabel("Y", "odometry-label-symbolic", "Y", 2, 1);
+        dataGrid.addLabel("θ", "odometry-label-symbolic", "θ", 2, 2, 2);
 
         dataGrid.set_row_spacing(5);
         dataGrid.set_column_spacing(5);
@@ -146,7 +161,6 @@ public:
         container.attach(connectBox, 0, 0, 2, 1);
         container.attach(controlGrid, 0, 1);
         container.attach(dataGrid, 1, 1);
-
     }
 
     ~Gui() {
@@ -179,12 +193,14 @@ private:
         dataGrid.updateLabel("Version", std::to_string(data.version));
 
         dataGrid.updateLabel("Left Speed", std::to_string(data.left.speed) + " tics");
-        dataGrid.updateLabel("Left Odometry", std::to_string(data.left.odometry));
         dataGrid.updateLabel("Left IR", std::to_string(data.left.ir) + "cm");
 
         dataGrid.updateLabel("Right Speed", std::to_string(data.right.speed) + " tics");
-        dataGrid.updateLabel("Right Odometry", std::to_string(data.right.odometry));
-        dataGrid.updateLabel("Right I1", std::to_string(data.right.ir) + "cm");
+        dataGrid.updateLabel("Right IR", std::to_string(data.right.ir) + "cm");
+
+        dataGrid.updateLabel("X", std::to_string(data.x));
+        dataGrid.updateLabel("Y", std::to_string(data.y));
+        dataGrid.updateLabel("θ", std::to_string(data.theta));
 
         return true;
     }

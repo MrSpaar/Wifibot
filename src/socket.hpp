@@ -2,6 +2,7 @@
 
 #include <giomm/socket.h>
 #include <giomm/inetsocketaddress.h>
+#include <iostream>
 
 
 class SocketTCP {
@@ -28,6 +29,7 @@ public:
             socket->connect(address, cancellable);
             return socket->is_connected();
         } catch (const Glib::Error &e) {
+            std::cout << e.what() << std::endl;
            return false;
         }
     }

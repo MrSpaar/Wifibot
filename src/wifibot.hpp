@@ -8,9 +8,14 @@
 #include <thread>
 #include <iostream>
 
+#define R 0.014
+#define L 0.032
 #define PORT 15020
 #define LOOP_TIME 200
 #define IR_MODEL(x) 62.9349569441*std::pow(x, -1.065799095080)
+
+static long initialL = 0;
+static long initialR = 0;
 
 
 struct RData {
@@ -24,26 +29,36 @@ struct RData {
     short version;
     short battery_level;
 
-    RData(uint8_t data[21]) {
+    double x;
+    double y;
+    double theta;
+
+    void update(uint8_t data[21], bool &first) {
         left.speed = (data[1] << 8) + data[0];
         if (left.speed > 32767) left.speed -= 65536;
 
-        left.ir = IR_MODEL(data[3]);
-        left.odometry = ((((long) data[8] << 24)) + (((long) data[7] << 16))
+        left.ir = IR_MODEL(data[3]*3.3 / 255);
+        left.odometry = (((long) data[8] << 24)) + (((long) data[7] << 16))
                                               + (((long) data[6] << 8))
-                                              + ((long) data[5]));
+                                              + ((long) data[5]) - initialL;
 
         right.speed = (data[10] << 8) + data[9];
         if (right.speed > 32767) right.speed -= 65536;
 
-        right.ir = IR_MODEL(data[11]);
-        right.odometry = ((((long) data[16] << 24)) + (((long) data[15] << 16))
+        right.ir = IR_MODEL(data[11]*3.3 / 255);
+        right.odometry = (((long) data[16] << 24)) + (((long) data[15] << 16))
                                                + (((long) data[14] << 8))
-                                               + ((long) data[13]));
+                                               + ((long) data[13]) - initialR;
 
         current = data[17];
         version = data[18];
         battery_level = 12.8/(((unsigned char) data[2]) / 10.0)*100;
+
+        if (first) {
+            first = false;
+            initialL = left.odometry;
+            initialR = right.odometry;
+        }
     }
 };
 
@@ -93,7 +108,7 @@ public:
         stop();
         usleep(1000000);
 
-        if (direction==+1) {
+        if (direction == +1) {
             order.setOrder(10, -10);
             std::cout << "Rotation à Droite" << std::endl;
             std::cout << "Gauche : " << order.getOrderL() << "    Droite : " << order.getOrderR() << std::endl;
@@ -119,7 +134,7 @@ public:
     }
 
     RData getData() {
-        return { inBuf };
+        return rData;
     }
 
     void disconnect() {
@@ -137,6 +152,7 @@ public:
     }
 private:
     void startSetThread() {
+        unsigned char crcFrame[6];
         std::cout << "Thread [send]: start!" << std::endl;
 
         while (running) {
@@ -154,7 +170,14 @@ private:
             outBuf[5] = (rightSpeed >> 8) & 0xFF;
             outBuf[6] = (char) (128*speedCtr + 64*leftDirection + 32*speedCtr + 16*rightDirection + 8);
 
-            short crc = computeCRC16(outBuf, 6, 1);
+            crcFrame[0] = outBuf[1];
+            crcFrame[1] = outBuf[2];
+            crcFrame[2] = outBuf[3];
+            crcFrame[3] = outBuf[4];
+            crcFrame[4] = outBuf[5];
+            crcFrame[5] = outBuf[6];
+
+            short crc = computeCRC16(crcFrame, 6);
             outBuf[7] = crc & 0xFF;
             outBuf[8] = (crc >> 8) & 0xFF;
 
@@ -166,6 +189,7 @@ private:
     }
 
     void startGetThread() {
+        double delta = LOOP_TIME/1000.0;
         std::cout << "Thread [receive]: start!" << std::endl;
 
         while (running) {
@@ -174,32 +198,48 @@ private:
             if (((inBuf[20] << 8) | (inBuf[19] & 0xFF)) != computeCRC16(inBuf, 19))
                 continue;
 
+            long beforeL = rData.left.odometry;
+            long beforeR = rData.right.odometry;
+            rData.update(inBuf, first);
+
+            double vL = ((rData.left.odometry - beforeL)/delta)*R;
+            double vR = ((rData.right.odometry - beforeR)/delta)*R;
+
+            double v = (vL + vR) / 2;
+            double omega = (vR - vL) / L;
+
+            rData.theta += omega * delta;
+            rData.x += v * cos(rData.theta) * delta;
+            rData.y += v * sin(rData.theta) * delta;
+
+            if (rData.theta > M_PI) rData.theta -= 2 * M_PI;
+            if (rData.theta < -M_PI) rData.theta += 2 * M_PI;
+
             std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_TIME));
         }
 
         std::cout << "Thread [receive]: stop!" << std::endl;
     }
 
-    short computeCRC16(uint8_t* frame, size_t length, uint8_t index = 0) {
-        unsigned int parity = 0;
-        unsigned int crc = 0xFFFF;
-        unsigned int polynome = 0xA001;
+    short computeCRC16(unsigned char *frame, size_t length) {
+    	unsigned int crc = 0xFFFF;
+    	unsigned int polynome = 0xA001;
+    	unsigned int parity = 0;
 
-        for (; index < length; index++) {
-            crc ^= *(frame + index);
+    	for (size_t CptOctet = 0; CptOctet < length; CptOctet++) {
+    		crc ^= *(frame + CptOctet);
 
-            for (uint8_t idxBit = 0; idxBit <= 7; idxBit++) {
-                parity = crc;
-                crc >>= 1;
+    		for (int CptBit = 0; CptBit <= 7 ; CptBit++) {
+    			parity = crc;
+    			crc >>= 1;
+    			if (parity%2 == true) crc ^= polynome;
+    		}
+    	}
 
-                if (parity%2 == true)
-                    crc ^= polynome;
-            }
-        }
-
-        return(crc);
+    	return(crc);
     }
 private:
+    RData rData;
     Order order;
     SocketTCP socket;
 
@@ -207,6 +247,7 @@ private:
     std::thread threadGet;
     std::atomic_bool running{true};
 
+    bool first = true;
     uint8_t outBuf[9] = {};
     uint8_t inBuf[21] = {};
 };
