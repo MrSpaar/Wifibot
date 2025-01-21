@@ -121,9 +121,7 @@ public:
 
     void move(float distance) {
         std::cout << "Move(" << distance << ")" << std::endl;
-
         float limit = rData.x + distance;
-        std::cout << limit << distance << std::endl;
 
         if (distance > 0) order.setOrder(40, 40);
         else order.setOrder(-40, -40);
