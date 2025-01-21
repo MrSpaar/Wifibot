@@ -46,7 +46,10 @@ public:
     ControlGrid() {
         confirmButton.set_label("Go");
         confirmButton.set_margin_top(5);
+        confirmButton.set_sensitive(false);
+
         distanceEntry.set_margin_top(5);
+        distanceEntry.set_sensitive(false);
 
         attach(confirmButton, 2, 3);
         attach(distanceEntry, 0, 3, 2, 1);
@@ -200,7 +203,7 @@ private:
 
         dataGrid.updateLabel("X", std::to_string(data.x));
         dataGrid.updateLabel("Y", std::to_string(data.y));
-        dataGrid.updateLabel("θ", std::to_string(data.theta));
+        dataGrid.updateLabel("θ", std::to_string(data.theta*180/M_PI));
 
         return true;
     }

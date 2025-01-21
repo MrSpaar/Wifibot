@@ -8,8 +8,8 @@
 #include <thread>
 #include <iostream>
 
-#define R 0.014
-#define L 0.032
+#define D 0.14
+#define L 0.32
 #define PORT 15020
 #define LOOP_TIME 200
 #define IR_MODEL(x) 62.9349569441*std::pow(x, -1.065799095080)
@@ -37,7 +37,7 @@ struct RData {
         left.speed = (data[1] << 8) + data[0];
         if (left.speed > 32767) left.speed -= 65536;
 
-        left.ir = IR_MODEL(data[3]*3.3 / 255);
+        left.ir = std::clamp(IR_MODEL((data[3]*3.3)/255), 20.0, 150.0);
         left.odometry = (((long) data[8] << 24)) + (((long) data[7] << 16))
                                               + (((long) data[6] << 8))
                                               + ((long) data[5]) - initialL;
@@ -45,7 +45,7 @@ struct RData {
         right.speed = (data[10] << 8) + data[9];
         if (right.speed > 32767) right.speed -= 65536;
 
-        right.ir = IR_MODEL(data[11]*3.3 / 255);
+        right.ir = std::clamp(IR_MODEL(data[11]*3.3 / 255), 20.0, 150.0);
         right.odometry = (((long) data[16] << 24)) + (((long) data[15] << 16))
                                                + (((long) data[14] << 8))
                                                + ((long) data[13]) - initialR;
@@ -198,12 +198,14 @@ private:
             if (((inBuf[20] << 8) | (inBuf[19] & 0xFF)) != computeCRC16(inBuf, 19))
                 continue;
 
-            long beforeL = rData.left.odometry;
-            long beforeR = rData.right.odometry;
+            // long beforeL = rData.left.odometry;
+            // long beforeR = rData.right.odometry;
             rData.update(inBuf, first);
 
-            double vL = ((rData.left.odometry - beforeL)/delta)*R;
-            double vR = ((rData.right.odometry - beforeR)/delta)*R;
+            // double vL = ((rData.left.odometry - beforeL)/delta)*R;
+            // double vR = ((rData.right.odometry - beforeR)/delta)*R;
+            double vL = (order.getOrderL()/336.0)*M_PI*D;
+            double vR = (order.getOrderR()/336.0)*M_PI*D;
 
             double v = (vL + vR) / 2;
             double omega = (vR - vL) / L;
@@ -221,12 +223,12 @@ private:
         std::cout << "Thread [receive]: stop!" << std::endl;
     }
 
-    short computeCRC16(unsigned char *frame, size_t length) {
+    short computeCRC16(unsigned char *frame, uint length) {
     	unsigned int crc = 0xFFFF;
     	unsigned int polynome = 0xA001;
     	unsigned int parity = 0;
 
-    	for (size_t CptOctet = 0; CptOctet < length; CptOctet++) {
+    	for (uint CptOctet = 0; CptOctet < length; CptOctet++) {
     		crc ^= *(frame + CptOctet);
 
     		for (int CptBit = 0; CptBit <= 7 ; CptBit++) {
