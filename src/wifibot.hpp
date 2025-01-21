@@ -1,5 +1,6 @@
 #pragma once
 
+#include "giomm/error.h"
 #include "order.hpp"
 #include "socket.hpp"
 
@@ -33,7 +34,7 @@ struct RData {
     double y;
     double theta;
 
-    void update(uint8_t data[21], bool &first) {
+    void update(uint8_t data[21]) {
         left.speed = (data[1] << 8) + data[0];
         if (left.speed > 32767) left.speed -= 65536;
 
@@ -53,12 +54,6 @@ struct RData {
         current = data[17];
         version = data[18];
         battery_level = 12.8/(((unsigned char) data[2]) / 10.0)*100;
-
-        if (first) {
-            first = false;
-            initialL = left.odometry;
-            initialR = right.odometry;
-        }
     }
 };
 
@@ -122,6 +117,23 @@ public:
     void stop() {
         order.setOrder(0,0);
         std::cout << "Stop()" << std::endl;
+    }
+
+    void move(float distance) {
+        std::cout << "Move(" << distance << ")" << std::endl;
+
+        float limit = rData.x + distance;
+        std::cout << limit << distance << std::endl;
+
+        if (distance > 0) order.setOrder(40, 40);
+        else order.setOrder(-40, -40);
+
+        while (true) {
+            if (distance > 0 and limit - rData.x <= 0) break;
+            if (distance < 0 and rData.x - limit <= 0) break;
+        }
+
+        stop();
     }
 
     bool connect(const std::string &ip) {
@@ -193,29 +205,25 @@ private:
         std::cout << "Thread [receive]: start!" << std::endl;
 
         while (running) {
-            socket.receive(inBuf, 21);
+            try { socket.receive(inBuf, 21); }
+            catch (Gio::Error &e) {}
 
             if (((inBuf[20] << 8) | (inBuf[19] & 0xFF)) != computeCRC16(inBuf, 19))
                 continue;
 
-            // long beforeL = rData.left.odometry;
-            // long beforeR = rData.right.odometry;
-            rData.update(inBuf, first);
-
-            // double vL = ((rData.left.odometry - beforeL)/delta)*R;
-            // double vR = ((rData.right.odometry - beforeR)/delta)*R;
-            double vL = (order.getOrderL()/336.0)*M_PI*D;
-            double vR = (order.getOrderR()/336.0)*M_PI*D;
+            rData.update(inBuf);
+            double vL = (rData.left.speed*100/336.0)*M_PI*D;
+            double vR = (rData.right.speed*100/336.0)*M_PI*D;
 
             double v = (vL + vR) / 2;
-            double omega = (vR - vL) / L;
+            double omega = (vR - vL) / 2*L;
 
             rData.theta += omega * delta;
-            rData.x += v * cos(rData.theta) * delta;
-            rData.y += v * sin(rData.theta) * delta;
-
             if (rData.theta > M_PI) rData.theta -= 2 * M_PI;
             if (rData.theta < -M_PI) rData.theta += 2 * M_PI;
+
+            rData.x += (v * cos(rData.theta) * delta)/10;
+            rData.y += (v * sin(rData.theta) * delta)/10;
 
             std::this_thread::sleep_for(std::chrono::milliseconds(LOOP_TIME));
         }
@@ -249,7 +257,6 @@ private:
     std::thread threadGet;
     std::atomic_bool running{true};
 
-    bool first = true;
     uint8_t outBuf[9] = {};
     uint8_t inBuf[21] = {};
 };

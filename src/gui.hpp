@@ -1,6 +1,7 @@
 #pragma once
 
 #include "wifibot.hpp"
+#include <cstdlib>
 #include <string>
 #include <unordered_map>
 
@@ -66,6 +67,14 @@ public:
         button->set_image_from_icon_name(iconName);
 
         attach(*button, col, row);
+    }
+
+    float getDistance() {
+        return strtof(distanceEntry.get_text().c_str(), NULL);
+    }
+
+    auto go() {
+        return confirmButton.signal_clicked();
     }
 private:
     Gtk::Entry distanceEntry;
@@ -134,6 +143,10 @@ public:
 
         controlGrid.addButton("Stop", "stop-button-symbolic", 1, 1, [this] {
             robot.stop();
+        });
+
+        controlGrid.go().connect([this] {
+            robot.move(controlGrid.getDistance());
         });
 
         controlGrid.set_margin_end(5);
