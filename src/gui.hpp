@@ -204,7 +204,7 @@ private:
     bool timeOut() {
         RData data = robot.getData();
 
-        dataGrid.updateLabel("Battery", std::to_string(data.battery_level) + "%");
+        dataGrid.updateLabel("Battery", std::to_string(data.batteryLevel) + "%");
         dataGrid.updateLabel("Current", std::to_string(data.current) + "A");
         dataGrid.updateLabel("Version", std::to_string(data.version));
 

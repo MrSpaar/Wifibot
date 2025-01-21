@@ -28,7 +28,7 @@ struct RData {
 
     short current;
     short version;
-    short battery_level;
+    short batteryLevel;
 
     double x;
     double y;
@@ -53,7 +53,7 @@ struct RData {
 
         current = data[17];
         version = data[18];
-        battery_level = 12.8/(((unsigned char) data[2]) / 10.0)*100;
+        batteryLevel = 12.8/(((unsigned char) data[2]) / 10.0)*100;
     }
 };
 
