@@ -5,11 +5,10 @@ project(
 )
 
 gnome = import('gnome')
-gresource = gnome.compile_resources('gresource', 'data/gresource.xml', source_dir: 'data')
 
 executable(
   'bin',
-  gresource,
+  gnome.compile_resources('gresource', 'data/icons.gresource.xml', source_dir: 'data/icons'),
   'src/main.cpp',
   dependencies: [dependency('gtkmm-4.0')],
 )

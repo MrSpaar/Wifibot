@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<gresources prefix="/com/github/mrspaar/Wifibot">
+  <gresource prefix="/com/github/mrspaar/Wifibot/icons/scalable/actions/">
+    <file preprocess="xml-stripblanks">speedometer-label-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">version-label-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">battery-label-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">ir-label-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">current-label-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">odometry-label-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">down-button-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">up-button-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">right-button-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">left-button-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">rotate-left-button-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">rotate-right-button-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">stop-button-symbolic.svg</file>
+  </gresource>
+</gresources>
